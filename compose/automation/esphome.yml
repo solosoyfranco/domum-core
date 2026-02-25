@@ -1,0 +1,21 @@
+services:
+  esphome:
+    image: esphome/esphome:latest
+    container_name: esphome
+    restart: unless-stopped
+    networks:
+      - domum-proxy
+    volumes:
+      - ${DOMUM_DIR:-/opt/domum-core}/data/esphome:/config
+    environment:
+      - TZ=America/New_York
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.esphome.rule=Host(`esphome.${DOMUM_DOMAIN}`)
+      - traefik.http.routers.esphome.entrypoints=websecure
+      - traefik.http.routers.esphome.tls=true
+      - traefik.http.routers.esphome.tls.certresolver=cf
+      - traefik.http.services.esphome.loadbalancer.server.port=6052
+      - traefik.http.routers.esphome.middlewares=securityHeaders@file
+    profiles:
+      - night

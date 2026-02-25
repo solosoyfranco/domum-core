@@ -1,0 +1,26 @@
+services:
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt:latest
+    container_name: zigbee2mqtt
+    restart: unless-stopped
+    networks:
+      - domum-internal
+      - domum-proxy
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - zigbee2mqtt-data:/app/data
+      - /run/udev:/run/udev:ro
+    # Set your adapter device path below
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.z2m.rule=Host(`z2m.${DOMUM_DOMAIN}`)
+      - traefik.http.routers.z2m.entrypoints=websecure
+      - traefik.http.routers.z2m.tls=true
+      - traefik.http.routers.z2m.tls.certresolver=cf
+      - traefik.http.services.z2m.loadbalancer.server.port=8080
+      - traefik.http.routers.z2m.middlewares=securityHeaders@file
+    profiles:
+      - core

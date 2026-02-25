@@ -1,0 +1,29 @@
+services:
+  mqtt:
+    image: eclipse-mosquitto:2
+    container_name: mqtt
+    restart: unless-stopped
+    networks:
+      - domum-internal
+      - domum-proxy
+    ports:
+      - "1883:1883"
+    volumes:
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-log:/mosquitto/log
+      - ./automation/mosquitto:/mosquitto/config:ro
+    labels:
+      - traefik.enable=true
+      - traefik.tcp.routers.mqtt.rule=HostSNI(`mqtt.${DOMUM_DOMAIN}`)
+      - traefik.tcp.routers.mqtt.entrypoints=websecure
+      - traefik.tcp.routers.mqtt.tls=true
+      - traefik.tcp.routers.mqtt.tls.certresolver=cf
+      - traefik.tcp.services.mqtt.loadbalancer.server.port=1883
+    profiles:
+      - core
+
+networks:
+  domum-internal:
+    external: true
+  domum-proxy:
+    external: true

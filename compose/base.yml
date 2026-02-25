@@ -1,0 +1,22 @@
+name: domum
+
+networks:
+  domum-proxy:
+    name: domum-proxy
+    driver: bridge
+  domum-internal:
+    name: domum-internal
+    driver: bridge
+
+volumes:
+  traefik-letsencrypt:
+  uptime-kuma-data:
+  portainer-data:
+  mosquitto-data:
+  mosquitto-log:
+  zigbee2mqtt-data:
+  homeassistant-config:
+  adguard-work:
+  adguard-conf:
+  jellyfin-config:
+  jellyfin-cache:

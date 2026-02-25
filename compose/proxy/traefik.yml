@@ -1,0 +1,34 @@
+services:
+  traefik:
+    image: traefik:v3.1
+    container_name: traefik
+    restart: unless-stopped
+    networks:
+      - domum-proxy
+    ports:
+      # LAN access. You can remove these and rely only on host networking or Tailscale if you prefer.
+      - "80:80"
+      - "443:443"
+    environment:
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+      - DOMUM_DOMAIN=${DOMUM_DOMAIN}
+      - DOMUM_EMAIL=${DOMUM_EMAIL}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-letsencrypt:/letsencrypt
+      - ./proxy/traefik:/etc/traefik:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik.rule=Host(`traefik.${DOMUM_DOMAIN}`)
+      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.tls=true
+      - traefik.http.routers.traefik.tls.certresolver=cf
+      - traefik.http.middlewares.traefik-auth.basicauth.usersfile=/etc/traefik/usersfile
+      - traefik.http.routers.traefik.middlewares=traefik-auth
+    profiles:
+      - core
+
+networks:
+  domum-proxy:
+    external: true

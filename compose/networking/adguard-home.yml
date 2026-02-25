@@ -1,0 +1,28 @@
+services:
+  adguard-home:
+    image: adguard/adguardhome:latest
+    container_name: adguard-home
+    restart: unless-stopped
+    networks:
+      - domum-proxy
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "3000:3000/tcp"
+    volumes:
+      - adguard-work:/opt/adguardhome/work
+      - adguard-conf:/opt/adguardhome/conf
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dns.rule=Host(`dns.${DOMUM_DOMAIN}`)
+      - traefik.http.routers.dns.entrypoints=websecure
+      - traefik.http.routers.dns.tls=true
+      - traefik.http.routers.dns.tls.certresolver=cf
+      - traefik.http.services.dns.loadbalancer.server.port=3000
+      - traefik.http.routers.dns.middlewares=securityHeaders@file
+    profiles:
+      - core
+
+networks:
+  domum-proxy:
+    external: true
