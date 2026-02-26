@@ -70,7 +70,9 @@ Restart:
     sudo ufw default deny incoming
     sudo ufw default allow outgoing
     sudo ufw allow OpenSSH
-    sudo ufw allow 9090/tcp    
+    sudo ufw allow 9090/tcp
+    sudo ufw allow 80/tcp
+    sudo ufw allow 443/tcp
     sudo ufw enable
 ```
 
@@ -232,7 +234,10 @@ Git:
 
 If your user is not already in the sudo group, run:
 ```bash
-sudo usermod -aG sudo jfranco
+sudo usermod -aG docker jfranco
+newgrp docker
+
+
 ```
 
 

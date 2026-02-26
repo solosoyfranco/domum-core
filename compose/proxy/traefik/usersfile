@@ -1,1 +1,3 @@
-# Create with: htpasswd -nb user strongpassword
+# Create with: htpasswd -nb user strongpassword | openssl base64
+# and store it in /etc/domum-core/secrets/traefik_dashboard_users 
+# sudo sh -lc 'umask 077; htpasswd -nbB jfranco "STRONG_PASSWORD_HERE" > /etc/domum-core/secrets/traefik_dashboard_users'

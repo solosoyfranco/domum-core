@@ -6,7 +6,6 @@ services:
     networks:
       - domum-proxy
     ports:
-      # LAN access. You can remove these and rely only on host networking or Tailscale if you prefer.
       - "80:80"
       - "443:443"
     environment:
@@ -16,7 +15,13 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-letsencrypt:/letsencrypt
-      - ./proxy/traefik:/etc/traefik:ro
+
+      # IMPORTANT: correct path to your traefik config directory
+      - /opt/domum-core/compose/proxy/traefik:/etc/traefik:ro
+
+      # Dashboard basic auth users file (secret on host)
+      - /etc/domum-core/secrets/traefik_dashboard_users:/etc/traefik/usersfile:ro
+
     labels:
       - traefik.enable=true
       - traefik.http.routers.traefik.rule=Host(`traefik.${DOMUM_DOMAIN}`)
@@ -24,10 +29,16 @@ services:
       - traefik.http.routers.traefik.service=api@internal
       - traefik.http.routers.traefik.tls=true
       - traefik.http.routers.traefik.tls.certresolver=cf
+
+      # IMPORTANT: point middleware to the mounted secret path
       - traefik.http.middlewares.traefik-auth.basicauth.usersfile=/etc/traefik/usersfile
       - traefik.http.routers.traefik.middlewares=traefik-auth
+
     profiles:
       - core
+
+volumes:
+  traefik-letsencrypt:
 
 networks:
   domum-proxy:
