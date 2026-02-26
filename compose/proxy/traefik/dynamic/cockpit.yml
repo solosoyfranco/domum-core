@@ -1,7 +1,7 @@
 http:
   routers:
     cockpit:
-      rule: "Host(`cockpit.${DOMUM_DOMAIN}`)"
+      rule: "Host(`cockpit.ladomum.com`)"
       entryPoints:
         - websecure
       tls:
@@ -13,5 +13,10 @@ http:
   services:
     cockpit-svc:
       loadBalancer:
+        serversTransport: cockpit-transport
         servers:
-          - url: "https://${DOMUM_LAN_IP}:9090"
+          - url: "https://127.0.0.1:9090"
+
+  serversTransports:
+    cockpit-transport:
+      insecureSkipVerify: true

@@ -17,6 +17,6 @@ services:
       - traefik.http.routers.ha.tls=true
       - traefik.http.routers.ha.tls.certresolver=cf
       - traefik.http.routers.ha.middlewares=securityHeaders@file
-      - traefik.http.services.ha.loadbalancer.server.url=http://${DOMUM_LAN_IP}:8123
+      - traefik.http.services.ha.loadbalancer.server.port=8123
     profiles:
       - core
