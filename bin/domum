@@ -161,7 +161,16 @@ export_env_for_compose() {
     fi
   fi
 }
-
+ensure_networks() {
+  # Networks declared as external in compose must exist before compose runs.
+  local nets=("domum-internal" "domum-proxy")
+  for n in "${nets[@]}"; do
+    if ! docker network inspect "$n" >/dev/null 2>&1; then
+      echo "[domum] Creating docker network: $n"
+      docker network create "$n" >/dev/null
+    fi
+  done
+}
 compose_cmd() {
   local -a args
   mapfile -t args < <(compose_files_for_enabled_services)
@@ -196,6 +205,7 @@ EOF
 }
 
 apply() {
+  ensure_networks
   need_root
   load_cfg
   export_env_for_compose
@@ -248,6 +258,7 @@ domum_night_autostop() {
 }
 
 status() {
+  ensure_networks
   need_root
   load_cfg
   export_env_for_compose
