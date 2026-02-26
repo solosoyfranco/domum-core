@@ -4,7 +4,10 @@ set -euo pipefail
 DOMUM_DIR="${DOMUM_DIR:-/opt/domum-core}"
 CFG_FILE="${CFG_FILE:-$DOMUM_DIR/config/domum.conf}"
 
-die() { echo "ERROR: $*" >&2; exit 1; }
+die() {
+  echo "ERROR: $*" >&2
+  exit 1
+}
 
 need_root() {
   if [[ "${EUID}" -ne 0 ]]; then
@@ -45,8 +48,8 @@ install_docker() {
   codename="$(. /etc/os-release && echo "${VERSION_CODENAME}")"
 
   echo \
-"deb [arch=${arch} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian ${codename} stable" \
-    > /etc/apt/sources.list.d/docker.list
+    "deb [arch=${arch} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian ${codename} stable" \
+    >/etc/apt/sources.list.d/docker.list
 
   apt-get update -y
   apt-get install -y --no-install-recommends docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
@@ -161,6 +164,7 @@ export_env_for_compose() {
 compose_cmd() {
   local -a args
   mapfile -t args < <(compose_files_for_enabled_services)
+  cd "$DOMUM_DIR"
   docker compose "${args[@]}" "$@"
 }
 
@@ -179,7 +183,7 @@ init_host() {
 
   # Create a default .env for services that use it (optional)
   if [[ ! -f "$DOMUM_DIR/.env" ]]; then
-    cat > "$DOMUM_DIR/.env" <<EOF
+    cat >"$DOMUM_DIR/.env" <<EOF
 # Optional per-host env file (not required for most services)
 # Example:
 # SOME_PASSWORD=change-me
@@ -260,7 +264,7 @@ schedule_install() {
   local down="${NIGHT_DOWN_TIME:-07:00}"
 
   # Create services + timers
-  cat > /etc/systemd/system/domum-night-up.service <<EOF
+  cat >/etc/systemd/system/domum-night-up.service <<EOF
 [Unit]
 Description=Start domum night profile
 Wants=network-online.target
@@ -272,7 +276,7 @@ Type=oneshot
 ExecStart=/usr/local/bin/domum-night-profile up
 EOF
 
-  cat > /etc/systemd/system/domum-night-down.service <<EOF
+  cat >/etc/systemd/system/domum-night-down.service <<EOF
 [Unit]
 Description=Stop domum night profile
 Wants=network-online.target
@@ -290,7 +294,7 @@ EOF
   local down_h="${down%:*}"
   local down_m="${down#*:}"
 
-  cat > /etc/systemd/system/domum-night-up.timer <<EOF
+  cat >/etc/systemd/system/domum-night-up.timer <<EOF
 [Unit]
 Description=Timer to start domum night profile
 
@@ -302,7 +306,7 @@ Persistent=true
 WantedBy=timers.target
 EOF
 
-  cat > /etc/systemd/system/domum-night-down.timer <<EOF
+  cat >/etc/systemd/system/domum-night-down.timer <<EOF
 [Unit]
 Description=Timer to stop domum night profile
 
@@ -355,19 +359,43 @@ EOF
 main() {
   local cmd="${1:-}"
   case "$cmd" in
-    init) shift; init_host "$@";;
-    apply) shift; apply "$@";;
-    update) shift; repo_update "$@";;
-    status) shift; status "$@";;
-    schedule)
+  init)
+    shift
+    init_host "$@"
+    ;;
+  apply)
+    shift
+    apply "$@"
+    ;;
+  update)
+    shift
+    repo_update "$@"
+    ;;
+  status)
+    shift
+    status "$@"
+    ;;
+  schedule)
+    shift
+    case "${1:-}" in
+    install)
       shift
-      case "${1:-}" in
-        install) shift; schedule_install "$@";;
-        remove) shift; schedule_remove "$@";;
-        *) usage; exit 1;;
-      esac
+      schedule_install "$@"
       ;;
-    *) usage; exit 1;;
+    remove)
+      shift
+      schedule_remove "$@"
+      ;;
+    *)
+      usage
+      exit 1
+      ;;
+    esac
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
   esac
 }
 
