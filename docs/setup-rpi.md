@@ -281,4 +281,13 @@ Verify:
 Owner should now be jfranco.
 
 ---
+# Traefik dashboard
+```
+```
+sudo apt-get update -y
+sudo apt-get install -y apache2-utils
 
+sudo htpasswd -nbB jfranco 'STRONGPASSWORD' | sudo tee /etc/domum-core/secrets/traefik_dashboard_users >/dev/null
+sudo chmod 600 /etc/domum-core/secrets/traefik_dashboard_users
+```
+```

@@ -11,7 +11,7 @@ services:
     environment:
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
       - DOMUM_DOMAIN=${DOMUM_DOMAIN}
-      - DOMUM_EMAIL=${DOMUM_EMAIL}
+      - DOMUM_EMAIL="jfranco.lopez@outlook.com"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-letsencrypt:/letsencrypt
