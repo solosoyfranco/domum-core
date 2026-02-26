@@ -59,7 +59,7 @@ install_docker() {
 }
 
 ensure_dirs() {
-  mkdir -p "$DOMUM_DIR/secrets" "$DOMUM_DIR/data" "$DOMUM_DIR/logs"
+  mkdir -p "$DOMUM_DIR/data" "$DOMUM_DIR/logs"
 }
 
 repo_update() {
@@ -155,9 +155,9 @@ export_env_for_compose() {
 
   # Cloudflare token
   if [[ -z "${CF_DNS_API_TOKEN:-}" ]]; then
-    if [[ -f "$DOMUM_DIR/secrets/cloudflare_api_token" ]]; then
+    if [[ -f "/etc/domum-core/secrets/cloudflare_api_token" ]]; then
+      CF_DNS_API_TOKEN="$(cat /etc/domum-core/secrets/cloudflare_api_token)"
       export CF_DNS_API_TOKEN
-      CF_DNS_API_TOKEN="$(cat "$DOMUM_DIR/secrets/cloudflare_api_token")"
     fi
   fi
 }
@@ -176,10 +176,10 @@ init_host() {
   ensure_dirs
 
   # Create local override files if missing
-  if [[ ! -f "$DOMUM_DIR/secrets/cloudflare_api_token" ]]; then
+  if [[ ! -f "/etc/domum-core/secrets/cloudflare_api_token" ]]; then
     echo "[domum] NOTE: secrets/cloudflare_api_token not found."
     echo "        If you want real TLS certs via Cloudflare DNS-01, create:"
-    echo "        $DOMUM_DIR/secrets/cloudflare_api_token"
+    echo "        /etc/domum-core/secrets/cloudflare_api_token"
   fi
 
   # Create a default .env for services that use it (optional)

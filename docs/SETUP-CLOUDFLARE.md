@@ -4,7 +4,7 @@ Create an API token in Cloudflare with:
 - Zone:DNS:Edit for your zone (ladomum.com)
 
 On the host, create:
-- /opt/domum-core/secrets/cloudflare_api_token
+- /etc/domum-core/secrets/cloudflare_api_token
 
 Then run:
 - sudo domum apply

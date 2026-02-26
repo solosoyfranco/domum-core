@@ -1,132 +1,145 @@
 # domum-core
 
-Home core services using Docker Compose.
+Self-updating home core services platform for Raspberry Pi (or any Debian/Ubuntu host).
 
-- Simple toggles: enable/disable services in one config file.
-- Simple scheduling: optional systemd timers for "night-only" profiles (no extra schedulers inside containers).
+This project is designed to be fully managed using one command:
 
-- A small script that:
-  - installs dependencies (Docker + Compose plugin) when needed
-  - deploys services based on config toggles
-  - updates services when the repo changes
-  - optionally sets up night-only schedules
+    curl -fsSL https://raw.githubusercontent.com/solosoyfranco/domum-core/main/install.sh | sudo bash
 
----
+Curl command:
 
-## Quick start (new host)
-
-On the Raspberry Pi (or Debian/Ubuntu server):
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/solosoyfranco/domum-core/main/install.sh | sudo bash
-```
-
-Then:
-
-```bash
-sudo domum init
-sudo domum apply
-```
-
-If you want night-only scheduling:
-
-```bash
-sudo domum schedule install
-```
+- Installs Docker if missing
+- Clones or updates the repository
+- Initializes the host
+- Applies the desired state
 
 ---
 
-## How toggles work
+# Architecture Philosophy
 
-All toggles live in:
-
-- `config/domum.conf` (shell variables)
-
-Examples:
-- Turn a service on: set `ENABLE_HOME_ASSISTANT=1`
-- Turn it off: set `ENABLE_HOME_ASSISTANT=0`
-
-Night-only services:
-- Put a service into the `night` profile in its Compose file
-- Set `ENABLE_NIGHT_PROFILE=1` and configure times in `config/domum.conf`
+- Git = source of truth
+- Host config and secrets live outside the repo
+- No inbound ports required
+- TLS via Cloudflare DNS-01
+- LAN + Tailscale DNS resolution
+- Simple systemd timers for scheduling
 
 ---
 
-## TLS and DNS (Cloudflare)
+# Directory Layout
 
-This starter uses Traefik with ACME DNS-01 via Cloudflare so you can get valid certificates without opening ports.
+Application Code:
+    /opt/domum-core
+Managed by git. Never edit directly on the host.
 
-You will need a Cloudflare API token with:
-- Zone:DNS:Edit for your zone (example: ladomum.com)
+Host Configuration:
+    /opt/domum-core/domum.conf
 
-Put the token in:
-- `/opt/domum-core/secrets/cloudflare_api_token`
-
-Or export it before apply:
-- `export CF_DNS_API_TOKEN="..."`
-
----
-
-## Internal name resolution (LAN + Tailscale)
-
-Traefik can serve `ha.ladomum.com`, `z2m.ladomum.com`, etc, but your clients must resolve those names to the Traefik IP.
-
-Common options:
-- LAN: run a local DNS (Unifi, AdGuard Home or Pi-hole) and create records for `*.ladomum.com` -> Traefik LAN IP
-- Tailscale: use Tailscale DNS settings to resolve `*.ladomum.com` to the Traefik Tailscale IP (or use MagicDNS + split DNS)
+Secrets:
+    /etc/domum-core/secrets/
 
 
 ---
 
-## Project layout
+# First-Time Setup (New Host)
 
-- `install.sh`  
-  One-liner bootstrap that installs prerequisites and places `domum` in `/usr/local/bin`.
+1. Create secrets directory:
 
-- `bin/domum`  
-  Main CLI.
-  - `domum init`
-  - `domum apply`
-  - `domum status`
-  - `domum schedule install|remove`
+    sudo mkdir -p /etc/domum-core/secrets
 
-- `config/domum.conf`  
-  Your toggles and host-specific values.
+2. Add your Cloudflare API token:
 
-- `compose/`  
-  Compose fragments per service.
+    sudo nano /etc/domum-core/secrets/cloudflare_api_token
+    sudo chmod 600 /etc/domum-core/secrets/cloudflare_api_token
 
-- `secrets/`  
-  Not committed. Put tokens and passwords here on the host.
+Required Cloudflare permissions:
+- Zone:DNS:Edit
+- Zone:Zone:Read
 
----
+3. Run:
 
-## Workflow
+    curl -fsSL https://raw.githubusercontent.com/solosoyfranco/domum-core/main/install.sh | sudo bash
 
-1) Edit config locally in git:
-- `config/domum.conf`
-- service compose files in `compose/`
 
-2) Commit and push.
-
-3) On the host:
-```bash
-sudo domum update
-sudo domum apply
-```
+Re-running the same command updates everything.
 
 ---
 
-## Testing on a spare server
+# Configuration File
 
-On any Debian/Ubuntu VM:
-- run the install command
-- enable only a small set of services (Traefik + uptime-kuma)
-- confirm you can reach `status.ladomum.com` from a client that resolves it to the host IP
+Host configuration lives in:
+
+    /opt/domum-core/domum.conf
+
+Example:
+
+    DOMUM_DOMAIN="ladomum.com"
+    DOMUM_EMAIL="you@email.com"
+
+    ENABLE_TRAEFIK=1
+    ENABLE_HOME_ASSISTANT=1
+    ENABLE_MQTT=1
+    ENABLE_ZIGBEE2MQTT=1
+    ENABLE_UPTIME_KUMA=1
+    ENABLE_PORTAINER=1
+
+Night scheduling:
+
+    ENABLE_NIGHT_PROFILE=1
+    NIGHT_UP_TIME="23:00"
+    NIGHT_DOWN_TIME="07:00"
 
 ---
 
-## Notes
-- Hard-resetting to origin/main is fine as long as you never edit files directly in /opt/domum-core. You should treat /opt/domum-core as deployed code.
-- In Tailscale admin console, configure split DNS for ladomum.com to use your LAN DNS (UCG) or another resolver that can answer those names.
-	- Then your phone/laptop on Tailscale resolves ha.ladomum.com even when away.
+# DNS Setup
+
+Cloudflare:
+Traefik uses DNS-01 challenge. No ports need to be opened.
+
+Certificates are automatically generated for:
+
+    ha.ladomum.com
+    status.ladomum.com
+    portainer.ladomum.com
+
+---
+
+UniFi LAN DNS:
+
+Create local A records:
+
+    ha.ladomum.com -> 192.168.x.x
+    status.ladomum.com -> 192.168.x.x
+    portainer.ladomum.com -> 192.168.x.x
+
+If wildcard supported:
+
+    *.ladomum.com -> 192.168.x.x
+
+---
+
+Tailscale Remote DNS:
+
+In Tailscale admin console:
+
+DNS → Split DNS
+
+Domain:
+    ladomum.com
+
+Nameserver:
+    192.168.x.x
+
+Now internal names resolve both locally and remotely.
+
+---
+
+# Notes
+
+- Never edit files inside /opt/domum-core directly.
+- Keep host config in /etc/domum.
+- Keep secrets in /etc/domum/secrets.
+- Use git for all service changes.
+- Re-run curl anytime to converge state.
+
+
