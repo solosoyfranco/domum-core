@@ -124,7 +124,8 @@ compose_files_for_enabled_services() {
 
   for f in "${files[@]}"; do
     [[ -f "$f" ]] || die "Missing compose file: $f"
-    echo "-f" "$f"
+    echo "-f"
+    echo "$f"
   done
 }
 
