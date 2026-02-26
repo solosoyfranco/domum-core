@@ -89,7 +89,7 @@ compose_files_for_enabled_services() {
   if [[ "${ENABLE_MQTT:-0}" == "1" ]]; then
     files+=("$DOMUM_DIR/compose/automation/mqtt.yml")
   fi
-  if [[ "${ENABLE_ZIGBEE2MQTT:-0}" == "1" ]]; then
+  if [[ "${ENABLE_ZIGBEE2MQTT:-0}" == "1" && "${HAS_ZIGBEE_DONGLE:-0}" == "1" ]]; then
     files+=("$DOMUM_DIR/compose/automation/zigbee2mqtt.yml")
   fi
   if [[ "${ENABLE_NODERED:-0}" == "1" ]]; then
