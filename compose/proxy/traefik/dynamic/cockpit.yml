@@ -1,0 +1,17 @@
+http:
+  routers:
+    cockpit:
+      rule: "Host(`cockpit.${DOMUM_DOMAIN}`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cf
+      service: cockpit-svc
+      middlewares:
+        - securityHeaders@file
+
+  services:
+    cockpit-svc:
+      loadBalancer:
+        servers:
+          - url: "https://${DOMUM_LAN_IP}:9090"

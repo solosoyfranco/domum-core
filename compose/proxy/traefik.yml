@@ -11,16 +11,32 @@ services:
     environment:
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
       - DOMUM_DOMAIN=${DOMUM_DOMAIN}
-      - DOMUM_EMAIL="jfranco.lopez@outlook.com"
+      - DOMUM_LAN_IP=${DOMUM_LAN_IP}
+      - DOMUM_EMAIL=jfranco.lopez@outlook.com
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-letsencrypt:/letsencrypt
-
-      # IMPORTANT: correct path to your traefik config directory
       - /opt/domum-core/compose/proxy/traefik:/etc/traefik:ro
-
-      # Dashboard basic auth users file (secret on host)
       - /etc/domum-core/secrets/traefik_dashboard_users:/etc/traefik/usersfile:ro
+
+    command:
+      - --api.dashboard=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+
+      - --providers.docker=true
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
+      - --providers.docker.exposedbydefault=false
+
+      - --providers.file.directory=/etc/traefik/dynamic
+      - --providers.file.watch=true
+
+      - --certificatesresolvers.cf.acme.email=${DOMUM_EMAIL}
+      - --certificatesresolvers.cf.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.cf.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.cf.acme.dnschallenge.delaybeforecheck=0
+
+      - --log.level=INFO
 
     labels:
       - traefik.enable=true
@@ -29,8 +45,6 @@ services:
       - traefik.http.routers.traefik.service=api@internal
       - traefik.http.routers.traefik.tls=true
       - traefik.http.routers.traefik.tls.certresolver=cf
-
-      # IMPORTANT: point middleware to the mounted secret path
       - traefik.http.middlewares.traefik-auth.basicauth.usersfile=/etc/traefik/usersfile
       - traefik.http.routers.traefik.middlewares=traefik-auth
 
