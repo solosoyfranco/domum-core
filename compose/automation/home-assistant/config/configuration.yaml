@@ -1,0 +1,3 @@
+volumes:
+  - /opt/domum-core/compose/automation/home-assistant/config:/config
+  - /etc/localtime:/etc/localtime:ro

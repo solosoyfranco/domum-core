@@ -3,7 +3,8 @@ services:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: homeassistant
     restart: unless-stopped
-    network_mode: host
+    networks:
+      - domum-proxy
     privileged: true
     environment:
       - TZ=America/New_York
@@ -16,7 +17,10 @@ services:
       - traefik.http.routers.ha.entrypoints=websecure
       - traefik.http.routers.ha.tls=true
       - traefik.http.routers.ha.tls.certresolver=cf
-      - traefik.http.routers.ha.middlewares=securityHeaders@file,websocketHeaders@file
-      - traefik.http.services.ha.loadbalancer.server.url=http://10.0.10.2:8123
+      - traefik.http.services.ha.loadbalancer.server.port=8123
     profiles:
       - core
+
+networks:
+  domum-proxy:
+    external: true
