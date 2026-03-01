@@ -10,7 +10,8 @@ http:
         stsIncludeSubdomains: true
         stsPreload: true
 
-    websocketHeaders:
+    forwardedHeaders:
       headers:
         customRequestHeaders:
           X-Forwarded-Proto: "https"
+          X-Forwarded-Port: "443"

@@ -9,9 +9,7 @@ http:
       service: cockpit-svc
       middlewares:
         - securityHeaders@file
-    middlewares:
-      - securityHeaders@file
-      - websocketHeaders@file
+        - forwardedHeaders@file
   services:
     cockpit-svc:
       loadBalancer:
