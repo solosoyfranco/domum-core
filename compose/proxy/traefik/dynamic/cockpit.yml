@@ -9,13 +9,15 @@ http:
       service: cockpit-svc
       middlewares:
         - securityHeaders@file
-
+    middlewares:
+      - securityHeaders@file
+      - websocketHeaders@file
   services:
     cockpit-svc:
       loadBalancer:
         serversTransport: cockpit-transport
         servers:
-          - url: "https://host.docker.internal:9090"
+          - url: "https://10.0.10.2:9090"
 
   serversTransports:
     cockpit-transport:
