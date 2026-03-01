@@ -39,7 +39,8 @@ services:
       - traefik.http.routers.traefik.tls.certresolver=cf
       - traefik.http.middlewares.traefik-auth.basicauth.usersfile=/etc/traefik/usersfile
       - traefik.http.routers.traefik.middlewares=traefik-auth
-
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     profiles:
       - core
 

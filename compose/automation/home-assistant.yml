@@ -10,13 +10,14 @@ services:
     volumes:
       - homeassistant-config:/config
       - /etc/localtime:/etc/localtime:ro
-    labels:
+    l    labels:
       - traefik.enable=true
       - traefik.http.routers.ha.rule=Host(`ha.${DOMUM_DOMAIN}`)
       - traefik.http.routers.ha.entrypoints=websecure
       - traefik.http.routers.ha.tls=true
       - traefik.http.routers.ha.tls.certresolver=cf
       - traefik.http.routers.ha.middlewares=securityHeaders@file
-      - traefik.http.services.ha.loadbalancer.server.port=8123
+
+      - traefik.http.services.ha.loadbalancer.server.url=http://host.docker.internal:8123
     profiles:
       - core
