@@ -25,7 +25,7 @@ providers:
 certificatesResolvers:
   cf:
     acme:
-      email: "${DOMUM_EMAIL}"
+      email: "jfranco.lopez@outlook.com"
       storage: "/letsencrypt/acme.json"
       dnsChallenge:
         provider: cloudflare
