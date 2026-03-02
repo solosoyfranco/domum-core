@@ -1,0 +1,15 @@
+# Sensitive / local runtime
+.storage/
+secrets.yaml
+*.log
+home-assistant*.log*
+home-assistant_v2.db*
+tts/
+deps/
+*.db
+*.db-shm
+*.db-wal
+
+# Random
+.HA_VERSION
+.ha_run.lock

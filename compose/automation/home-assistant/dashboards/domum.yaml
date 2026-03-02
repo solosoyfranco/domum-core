@@ -1,0 +1,10 @@
+title: Domum
+views:
+  - title: Overview
+    path: overview
+    cards:
+      - type: entities
+        title: House
+        entities:
+          - input_boolean.guest_mode
+          - input_number.coffee_counter

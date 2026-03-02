@@ -1,72 +1,39 @@
-# Home Assistant Core Configuration
 homeassistant:
   name: Home
-  latitude: !secret latitude
-  longitude: !secret longitude
-  elevation: !secret elevation
-  unit_system: imperial
   time_zone: America/New_York
+  unit_system: imperial
   currency: USD
-  external_url: https://ha.ladomum.com
-  internal_url: http://homeassistant:8123
-  allowlist_external_dirs:
-    - /tmp
-    - /config/www
-  media_dirs:
-    media: /media
-  auth_providers:
-    - type: homeassistant
-    - type: trusted_networks
+  external_url: !secret external_url
+  internal_url: !secret internal_url
 
-# HTTP Component with proxy settings - THIS IS CRITICAL FOR TRAEFIK
+default_config:
+
+# Reverse proxy (Traefik)
 http:
   use_x_forwarded_for: true
   trusted_proxies:
+    - 172.16.0.0/12
     - 127.0.0.1
     - ::1
-    - 172.16.0.0/12   # Docker internal network
-    - 192.168.0.0/16  # Your local network
-    - 10.0.0.0/8
-    - 172.19.0.0/16   # Your specific Docker network (from the logs)
-  ip_ban_enabled: true
-  login_attempts_threshold: 5
 
-# Default Components
+# YAML-mode UI (optional but recommended for GitOps)
+lovelace:
+  mode: yaml
+  dashboards:
+    domum-dashboard:
+      mode: yaml
+      title: Domum
+      icon: mdi:home-assistant
+      show_in_sidebar: true
+      filename: dashboards/domum.yaml
+
 frontend:
   themes: !include_dir_merge_named themes
 
-config:
-
-lovelace:
-  mode: yaml
-  resources: []
-
-# Include files
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 
-# Core integrations
-api:
-  encryption:
-    enabled: true
-
-default_config:
-
-# Discovery
-discovery:
-
-# System health
-system_health:
-
-# Network
-network:
-  allowlist:
-    - 127.0.0.1
-    - 10.0.0.0/8
-    - ::1
-    - 172.16.0.0/12
-    - 192.168.0.0/16
-
-# Cloud
-cloud:
+# Put most of your stuff into packages so it stays modular
+homeassistant:
+  packages: !include_dir_named packages
