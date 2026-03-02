@@ -12,7 +12,6 @@ services:
       - /opt/domum-core/compose/automation/home-assistant:/config
       - /etc/domum-core/secrets/home-assistant/secrets.yaml:/config/secrets.yaml:ro
       - /etc/localtime:/etc/localtime:ro
-      - /run/dbus:/run/dbus:ro
     labels:
       - traefik.enable=true
       - traefik.http.routers.ha.rule=Host(`ha.${DOMUM_DOMAIN}`)

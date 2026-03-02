@@ -37,6 +37,7 @@ lovelace:
       title: Domum
       icon: mdi:home-assistant
       show_in_sidebar: true
+      url_path: domum-dashboard
       filename: dashboards/domum.yaml
 
 frontend:
@@ -52,3 +53,6 @@ logger:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
+# Bluetooth explicitly disabled
+bluetooth:
