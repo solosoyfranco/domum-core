@@ -7,8 +7,8 @@ homeassistant:
   unit_system: imperial
   time_zone: America/New_York
   currency: USD
-  external_url: !secret external_url
-  internal_url: !secret internal_url
+  external_url: https://ha.ladomum.com
+  internal_url: http://homeassistant:8123
   allowlist_external_dirs:
     - /tmp
     - /config/www
@@ -18,7 +18,7 @@ homeassistant:
     - type: homeassistant
     - type: trusted_networks
 
-# HTTP Component with proxy settings
+# HTTP Component with proxy settings - THIS IS CRITICAL FOR TRAEFIK
 http:
   use_x_forwarded_for: true
   trusted_proxies:
@@ -27,6 +27,7 @@ http:
     - 172.16.0.0/12   # Docker internal network
     - 192.168.0.0/16  # Your local network
     - 10.0.0.0/8
+    - 172.19.0.0/16   # Your specific Docker network (from the logs)
   ip_ban_enabled: true
   login_attempts_threshold: 5
 
@@ -38,9 +39,7 @@ config:
 
 lovelace:
   mode: yaml
-  resources:
-    - url: /hacsfiles/hass-hue-icons/hass-hue-icons.js
-      type: module
+  resources: []
 
 # Include files
 automation: !include automations.yaml
@@ -65,32 +64,8 @@ network:
   allowlist:
     - 127.0.0.1
     - ::1
+    - 172.16.0.0/12
+    - 192.168.0.0/16
 
 # Cloud
 cloud:
-
-# Example integrations (uncomment as needed)
-# mqtt:
-#   broker: core-mosquitto
-#   port: 1883
-#   discovery: true
-
-# recorder:
-#   db_url: !secret mariadb_connection_string
-#   purge_keep_days: 30
-
-# history:
-
-# logbook:
-
-# sun:
-
-# person:
-
-# mobile_app:
-
-# conversation:
-
-# stream:
-
-# media_source:
