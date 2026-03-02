@@ -9,9 +9,9 @@ services:
     environment:
       - TZ=America/New_York
     volumes:
-      - homeassistant-config:/config
+      - /opt/domum-core/compose/automation/home-assistant:/config
       - /etc/localtime:/etc/localtime:ro
-      - /run/dbus:/run/dbus:ro  # Optional for Bluetooth
+      - /run/dbus:/run/dbus:ro
     labels:
       - traefik.enable=true
       - traefik.http.routers.ha.rule=Host(`ha.${DOMUM_DOMAIN}`)
@@ -28,10 +28,6 @@ services:
       retries: 3
     profiles:
       - core
-
-volumes:
-  homeassistant-config:
-    external: false
 
 networks:
   domum-proxy:
