@@ -1,4 +1,0 @@
-# packages/system.yaml
-bluetooth:
-  # disable bluetooth integration in containerized environments
-  enabled: false

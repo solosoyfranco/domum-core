@@ -5,7 +5,9 @@ homeassistant:
   currency: USD
   external_url: !secret external_url
   internal_url: !secret internal_url
+  packages: !include_dir_named packages
 
+# Keep the “nice defaults” for now
 default_config:
 
 # Reverse proxy (Traefik)
@@ -16,11 +18,11 @@ http:
     - 127.0.0.1
     - ::1
 
-# YAML-mode UI (optional but recommended for GitOps)
+# YAML dashboards (updated format; avoids the 2026.8 warning)
 lovelace:
-  mode: yaml
+  resource_mode: yaml
   dashboards:
-    domum-dashboard:
+    domum:
       mode: yaml
       title: Domum
       icon: mdi:home-assistant
@@ -33,7 +35,3 @@ frontend:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
-
-# Put most of your stuff into packages so it stays modular
-homeassistant:
-  packages: !include_dir_named packages
