@@ -15,3 +15,10 @@ http:
         customRequestHeaders:
           X-Forwarded-Proto: "https"
           X-Forwarded-Port: "443"
+
+    # Not always required for HA, but harmless and helps some setups
+    websocketHeaders:
+      headers:
+        customRequestHeaders:
+          Connection: "Upgrade"
+          Upgrade: "websocket"

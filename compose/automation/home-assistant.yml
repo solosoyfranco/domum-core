@@ -11,15 +11,27 @@ services:
     volumes:
       - homeassistant-config:/config
       - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro  # Optional for Bluetooth
     labels:
       - traefik.enable=true
       - traefik.http.routers.ha.rule=Host(`ha.${DOMUM_DOMAIN}`)
       - traefik.http.routers.ha.entrypoints=websecure
       - traefik.http.routers.ha.tls=true
       - traefik.http.routers.ha.tls.certresolver=cf
+      - traefik.http.routers.ha.middlewares=securityHeaders@file,forwardedHeaders@file
       - traefik.http.services.ha.loadbalancer.server.port=8123
+      - traefik.http.services.ha.loadbalancer.server.scheme=http
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8123"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     profiles:
       - core
+
+volumes:
+  homeassistant-config:
+    external: false
 
 networks:
   domum-proxy:
