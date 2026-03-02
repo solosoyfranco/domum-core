@@ -7,10 +7,21 @@ homeassistant:
   internal_url: !secret internal_url
   packages: !include_dir_named packages
 
-# Keep the “nice defaults” for now
-default_config:
+# Explicit "nice defaults"
+config:
+history:
+logbook:
+map:
+mobile_app:
+person:
+sun:
+system_health:
+zeroconf:
+ssdp:
+cloud:
+energy:
+my:
 
-# Reverse proxy (Traefik)
 http:
   use_x_forwarded_for: true
   trusted_proxies:
@@ -18,7 +29,6 @@ http:
     - 127.0.0.1
     - ::1
 
-# YAML dashboards (updated format; avoids the 2026.8 warning)
 lovelace:
   resource_mode: yaml
   dashboards:
@@ -31,6 +41,13 @@ lovelace:
 
 frontend:
   themes: !include_dir_merge_named themes
+
+# Silence noisy bluetooth errors in containers
+logger:
+  default: info
+  logs:
+    homeassistant.components.bluetooth: critical
+    bluetooth_auto_recovery: critical
 
 automation: !include automations.yaml
 script: !include scripts.yaml
