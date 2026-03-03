@@ -1,0 +1,25 @@
+services:
+  go2rtc:
+    image: alexxit/go2rtc:latest
+    container_name: go2rtc
+    restart: unless-stopped
+    networks:
+      - domum-proxy
+      - domum-internal
+    volumes:
+      - /opt/domum-core/compose/automation/go2rtc:/config
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=domum-proxy
+      - traefik.http.routers.go2rtc.rule=Host(`go2rtc.${DOMUM_DOMAIN}`)
+      - traefik.http.routers.go2rtc.entrypoints=websecure
+      - traefik.http.routers.go2rtc.tls=true
+      - traefik.http.routers.go2rtc.tls.certresolver=cf
+
+networks:
+  domum-proxy:
+    external: true
+  domum-internal:
+    name: domum-internal
+    driver: bridge
+
