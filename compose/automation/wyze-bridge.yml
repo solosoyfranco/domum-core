@@ -28,7 +28,4 @@ services:
 networks:
   domum-proxy:
     external: true
-  domum-internal:
-    name: domum-internal
-    driver: bridge
 
