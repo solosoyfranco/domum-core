@@ -1,7 +1,7 @@
 services:
   mariadb:
-    image: mariadb:10.11
-    container_name: mariadb
+    image: mariadb:latest
+    container_name: mariadb_ha
     restart: unless-stopped
 
     # Keep it off the public proxy network.
@@ -38,4 +38,3 @@ networks:
   domum-data:
     name: domum-data
     driver: bridge
-    internal: true
