@@ -1,7 +1,6 @@
 homeassistant:
   name: Domum-Home
   time_zone: America/New_York
-  unit_system: imperial
   currency: USD
   external_url: !secret external_url
   internal_url: !secret internal_url
