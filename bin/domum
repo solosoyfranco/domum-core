@@ -86,6 +86,9 @@ compose_files_for_enabled_services() {
   if [[ "${ENABLE_HOME_ASSISTANT:-0}" == "1" ]]; then
     files+=("$DOMUM_DIR/compose/automation/home-assistant.yml")
   fi
+  if [[ "${ENABLE_MARIADB:-0}" == "1" ]]; then
+    files+=("$DOMUM_DIR/compose/automation/mariadb.yml")
+  fi
   if [[ "${ENABLE_MQTT:-0}" == "1" ]]; then
     files+=("$DOMUM_DIR/compose/automation/mqtt.yml")
   fi
