@@ -28,4 +28,6 @@ services:
 networks:
   domum-proxy:
     external: true
+  domum-internal:
+    external: true
 
