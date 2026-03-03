@@ -1,7 +1,7 @@
 services:
   mariadb:
     image: mariadb:latest
-    container_name: mariadb_ha
+    container_name: mariadb
     restart: unless-stopped
 
     # Keep it off the public proxy network.
