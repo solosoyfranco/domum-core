@@ -1,0 +1,38 @@
+services:
+  wyze-bridge:
+    image: mrlt8/wyze-bridge:latest
+    container_name: wyze-bridge
+    restart: unless-stopped
+
+    networks:
+      - domum-proxy
+
+    env_file:
+      - /etc/domum-core/secrets/wyze/wyze-bridge.env
+    # [OPTIONAL] Credentials can be set in the WebUI
+            # API Key and ID can be obtained from the wyze dev portal: 
+            # https://developer-api-console.wyze.com/#/apikey/view
+      # https://github.com/mrlt8/docker-wyze-bridge/blob/main/docker-compose.sample.yml
+    # Persistent tokens/cache, thumbnails, etc.
+    volumes:
+      - /opt/domum-core/compose/automation/wyze-bridge:/config
+
+    ports:
+      - "5000:5000"
+      - "8554:8554"
+
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=domum-proxy
+      - traefik.http.routers.wyze.rule=Host(`wyze.${DOMUM_DOMAIN}`)
+      - traefik.http.routers.wyze.entrypoints=websecure
+      - traefik.http.routers.wyze.tls=true
+      - traefik.http.routers.wyze.tls.certresolver=cf
+      - traefik.http.services.wyze.loadbalancer.server.port=5000
+
+    profiles:
+      - core
+
+networks:
+  domum-proxy:
+    external: true
