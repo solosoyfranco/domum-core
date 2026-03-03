@@ -1,0 +1,41 @@
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: mariadb
+    restart: unless-stopped
+
+    # Keep it off the public proxy network.
+    # We'll use a dedicated internal network so HA and future Grafana can reach it.
+    networks:
+      - domum-data
+
+    # Credentials live outside the repo (matches your pattern).
+    env_file:
+      - /etc/domum-core/secrets/mariadb/mariadb.env
+
+    command:
+      - --transaction-isolation=READ-COMMITTED
+      - --binlog-format=ROW
+      - --innodb-file-per-table=1
+      - --skip-name-resolve=1
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+    volumes:
+      - /opt/domum-core/compose/automation/mariadb/data:/var/lib/mysql
+      - /opt/domum-core/compose/automation/mariadb/conf.d:/etc/mysql/conf.d:ro
+
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u$$MARIADB_USER -p$$MARIADB_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+    profiles:
+      - core
+
+networks:
+  domum-data:
+    name: domum-data
+    driver: bridge
+    internal: true

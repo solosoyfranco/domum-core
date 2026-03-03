@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     networks:
       - domum-proxy
+      - domum-data
     privileged: true
     environment:
       - TZ=America/New_York
@@ -31,4 +32,6 @@ services:
 
 networks:
   domum-proxy:
+    external: true
+  domum-data:
     external: true
