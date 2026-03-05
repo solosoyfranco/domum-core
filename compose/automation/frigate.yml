@@ -4,7 +4,7 @@ services:
     container_name: frigate
     restart: unless-stopped
 
-    shm_size: "256mb"
+    shm_size: "512mb"
 
     # If you use docker networks like domum-proxy and iot_vlan50:
     networks:
@@ -28,7 +28,7 @@ services:
       - /dev/bus/usb:/dev/bus/usb
 
     # Optional: if your system needs extra perms for USB
-    privileged: false
+    privileged: true
 
     environment:
       - TZ=America/New_York
