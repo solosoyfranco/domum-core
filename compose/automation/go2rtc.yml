@@ -23,8 +23,10 @@ services:
       - traefik.http.routers.go2rtc.entrypoints=websecure
       - traefik.http.routers.go2rtc.tls=true
       - traefik.http.routers.go2rtc.tls.certresolver=cf
-    enviroment:
-      -TZ=America/New_York
+
+    environment:
+      - TZ=America/New_York
+
 networks:
   domum-proxy:
     external: true
