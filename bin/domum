@@ -89,13 +89,9 @@ compose_files_for_enabled_services() {
   if [[ "${ENABLE_MARIADB:-0}" == "1" ]]; then
     files+=("$DOMUM_DIR/compose/automation/mariadb.yml")
   fi
-  if [[ "${ENABLE_WYZE:-0}" == "1" ]]; then
-    files+=("$DOMUM_DIR/compose/automation/wyze-bridge.yml")
-  fi
   if [[ "${ENABLE_GO2RTC:-0}" == "1" ]]; then
     files+=("$DOMUM_DIR/compose/automation/go2rtc.yml")
   fi
-
   if [[ "${ENABLE_MQTT:-0}" == "1" ]]; then
     files+=("$DOMUM_DIR/compose/automation/mqtt.yml")
   fi

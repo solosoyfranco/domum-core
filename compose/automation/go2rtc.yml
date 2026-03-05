@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     networks:
       - domum-proxy
-      - domum-internal
+      - iot_vlan50
     volumes:
       - /opt/domum-core/compose/automation/go2rtc:/config
     labels:
@@ -19,6 +19,6 @@ services:
 networks:
   domum-proxy:
     external: true
-  domum-internal:
+  iot_vlan50:
     external: true
 
