@@ -24,8 +24,8 @@ services:
       - "5001:5000"
 
     # Optional: USB Coral (uncomment if you have it)
-#    devices:
-#      - /dev/bus/usb:/dev/bus/usb
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
 
     # Optional: if your system needs extra perms for USB
     privileged: false
