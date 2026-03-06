@@ -291,3 +291,22 @@ sudo htpasswd -nbB jfranco 'STRONGPASSWORD' | sudo tee /etc/domum-core/secrets/t
 sudo chmod 600 /etc/domum-core/secrets/traefik_dashboard_users
 ```
 ```
+
+---
+# HACS installation
+
+Install HACS (The Bridge)
+
+Since the Frigate integration is not a "built-in" Home Assistant component, you need the Home Assistant Community Store (HACS) to install it.
+
+Open a terminal on your RPi.
+Run this command to install HACS inside your container:
+```
+```
+   docker exec -it homeassistant bash -c "wget -O - https://get.hacs.xyz | bash -"
+```
+```
+
+   
+   Restart the Home Assistant container.In the HA GUI, go to Settings > Devices & Services > Add Integration and search for HACS. Follow the GitHub auth prompts.
+```
