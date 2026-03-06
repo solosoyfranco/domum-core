@@ -11,7 +11,7 @@ services:
       - TZ=America/New_York
     volumes:
       - /opt/domum-core/compose/automation/home-assistant:/config
-      - /etc/domum-core/secrets/home-assistant/secrets.yaml:/config/secrets.yaml:ro
+      - /etc/domum-core/secrets/home-assistant/secrets.yaml:/config/secrets.yaml
       - /etc/localtime:/etc/localtime:ro
     labels:
       - traefik.enable=true
