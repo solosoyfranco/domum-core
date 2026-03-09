@@ -310,3 +310,16 @@ Run this command to install HACS inside your container:
    
    Restart the Home Assistant container.In the HA GUI, go to Settings > Devices & Services > Add Integration and search for HACS. Follow the GitHub auth prompts.
 ```
+
+---
+# Cockpit DNS
+```
+sudo cat /etc/cockpit/cockpit.conf
+## it should contain:
+[WebService]
+Origins = https://cockpit.ladomum.com wss://cockpit.ladomum.com https://10.0.10.2:9090
+ProtocolHeader = X-Forwarded-Proto
+ForwardedForHeader = X-Forwarded-For
+```
+
+---

@@ -8,11 +8,12 @@ http:
         certResolver: cf
       service: cockpit-svc
       middlewares:
-        - securityHeaders@file
         - forwardedHeaders@file
+
   services:
     cockpit-svc:
       loadBalancer:
+        passHostHeader: true
         serversTransport: cockpit-transport
         servers:
           - url: "https://10.0.10.2:9090"
