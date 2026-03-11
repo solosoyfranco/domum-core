@@ -23,7 +23,7 @@ services:
 
     volumes:
       - /opt/domum-core/compose/automation/mariadb/data:/var/lib/mysql
-      - /opt/domum-core/compose/automation/mariadb/conf.d:/etc/mysql/conf.d:ro
+      - /opt/domum-core/compose/automation/mariadb/conf.d:/etc/mysql/conf.d
 
     healthcheck:
       test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u$$MARIADB_USER -p$$MARIADB_PASSWORD --silent"]
