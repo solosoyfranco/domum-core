@@ -273,8 +273,7 @@ If backups was created by root:
 ```
 
 Verify:
-```
-
+```bash
     ls -ld ~/backups
 ```
 
@@ -282,14 +281,12 @@ Owner should now be jfranco.
 
 ---
 # Traefik dashboard
-```
-```
+```bash
 sudo apt-get update -y
 sudo apt-get install -y apache2-utils
 
 sudo htpasswd -nbB jfranco 'STRONGPASSWORD' | sudo tee /etc/domum-core/secrets/traefik_dashboard_users >/dev/null
 sudo chmod 600 /etc/domum-core/secrets/traefik_dashboard_users
-```
 ```
 
 ---
@@ -301,19 +298,18 @@ Since the Frigate integration is not a "built-in" Home Assistant component, you 
 
 Open a terminal on your RPi.
 Run this command to install HACS inside your container:
-```
-```
+```bash
    docker exec -it homeassistant bash -c "wget -O - https://get.hacs.xyz | bash -"
-```
 ```
 
    
    Restart the Home Assistant container.In the HA GUI, go to Settings > Devices & Services > Add Integration and search for HACS. Follow the GitHub auth prompts.
-```
+
 
 ---
 # Cockpit DNS
-```
+
+```bash
 sudo cat /etc/cockpit/cockpit.conf
 ## it should contain:
 [WebService]
