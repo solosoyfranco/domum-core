@@ -1,7 +1,4 @@
 homeassistant:
-  name: Domum-Home
-  time_zone: America/New_York
-  currency: USD
   external_url: !secret external_url
   internal_url: !secret internal_url
   packages: !include_dir_named packages
