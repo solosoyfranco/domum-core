@@ -8,7 +8,13 @@ services:
       - domum-data
     privileged: true
     environment:
-      - TZ=America/New_York
+      - TZ=America/New_Yorka
+    devices:
+      - /dev/serial/by-id:/dev/serial/by-id
+      - /dev/ttyUSB0:/dev/ttyUSB0
+      - /dev/ttyACM0:/dev/ttyACM0
+    group_add:
+      - dialout
     volumes:
       - /opt/domum-core/compose/automation/home-assistant:/config
       - /etc/domum-core/secrets/home-assistant/secrets.yaml:/config/secrets.yaml
@@ -29,9 +35,10 @@ services:
       timeout: 10s
       retries: 3
     depends_on:
-      - mariadb
+          mariadb:
+            condition: service_healthy
     profiles:
-      - core
+          - core
 
 networks:
   domum-proxy:
