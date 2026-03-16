@@ -17,6 +17,7 @@ services:
       - dialout
     volumes:
       - /opt/domum-core/compose/automation/home-assistant:/config
+      - /etc/domum-core/secrets/home-assistant/secrets.yaml:/config/secrets.yaml
       - /etc/localtime:/etc/localtime:ro
     labels:
       - traefik.enable=true
