@@ -10,7 +10,6 @@ services:
     environment:
       - TZ=America/New_York
     devices:
-      - /dev/serial/by-id:/dev/serial/by-id
       - /dev/ttyUSB0:/dev/ttyUSB0
       - /dev/ttyACM0:/dev/ttyACM0
     group_add:
