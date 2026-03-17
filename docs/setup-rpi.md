@@ -305,6 +305,18 @@ Run this command to install HACS inside your container:
    
    Restart the Home Assistant container.In the HA GUI, go to Settings > Devices & Services > Add Integration and search for HACS. Follow the GitHub auth prompts.
 
+# First time HA 
+
+Need to create a secrets file in order to start the first time:
+```
+sudo nano /opt/domum-core/compose/automation/home-assistant/secrets.yaml
+
+external_url: "https://ha.example.com"
+internal_url: "http://homeassistant:8123"
+mqtt_user: "CHANGE_ME"
+mqtt_pass: "CHANGE_ME"
+ha_db_url: "mysql://ha:CHANGE_ME@mariadb:3306/homeassistant?charset=utf8mb4"
+```
 
 ---
 # Cockpit DNS
