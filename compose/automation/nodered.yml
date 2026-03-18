@@ -3,14 +3,14 @@ services:
     image: nodered/node-red:latest
     container_name: nodered
     restart: unless-stopped
+    user: "1000:1000"
     networks:
       - domum-internal
       - domum-proxy
     environment:
       - TZ=America/New_York
-    user: "1000:1000"
     volumes:
-      - /opt/domum-core/compose/automation/nodered:/data
+      - nodered-data:/data
     labels:
       - traefik.enable=true
       - traefik.docker.network=domum-proxy
@@ -22,6 +22,9 @@ services:
       - traefik.http.services.nodered.loadbalancer.server.port=1880
     profiles:
       - core
+
+volumes:
+  nodered-data:
 
 networks:
   domum-internal:
