@@ -12,7 +12,7 @@ services:
       - /opt/domum-core/compose/automation/zigbee2mqtt:/app/data
       - /run/udev:/run/udev:ro
     devices:
-      - /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_1069b4aa32a6ed118a20e8a32981d5c7-if00-port0:/dev/zigbee
+      - /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_1069b4aa32a6ed118a20e8a32981d5c7-if00-port0:/dev/serial/by-id/sonoff-zigbee
     labels:
       - traefik.enable=true
       - traefik.docker.network=domum-proxy
@@ -22,11 +22,6 @@ services:
       - traefik.http.routers.z2m.tls.certresolver=cf
       - traefik.http.routers.z2m.middlewares=securityHeaders@file,forwardedHeaders@file
       - traefik.http.services.z2m.loadbalancer.server.port=8080
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
     profiles:
       - core
 

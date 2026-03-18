@@ -8,9 +8,9 @@ services:
     environment:
       - TZ=America/New_York
     volumes:
-      - /opt/domum-core/compose/automation/mqtt/config:/mosquitto/config
-      - /opt/domum-core/compose/automation/mqtt/data:/mosquitto/data
-      - /opt/domum-core/compose/automation/mqtt/log:/mosquitto/log
+      - /opt/domum-core/compose/automation/mosquitto:/mosquitto/config
+      - /opt/domum-core/compose/automation/mosquitto/data:/mosquitto/data
+      - /opt/domum-core/compose/automation/mosquitto/log:/mosquitto/log
     ports:
       - "1883:1883"
     profiles:

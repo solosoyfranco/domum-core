@@ -1,2 +1,35 @@
+homeassistant:
+  enabled: true
+
+frontend:
+  enabled: true
+
+mqtt:
+  server: mqtt://mqtt:1883
+  base_topic: zigbee2mqtt
+
 serial:
-  port: /dev/zigbee
+  port: /dev/serial/by-id/sonoff-zigbee
+  adapter: zstack
+
+advanced:
+  network_key:
+    - 55
+    - 135
+    - 55
+    - 132
+    - 122
+    - 79
+    - 19
+    - 176
+    - 218
+    - 150
+    - 186
+    - 191
+    - 105
+    - 68
+    - 86
+    - 131
+
+permit_join: false
+version: 5
