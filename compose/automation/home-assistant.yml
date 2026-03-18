@@ -9,11 +9,6 @@ services:
     privileged: true
     environment:
       - TZ=America/New_York
-    devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
-      - /dev/ttyACM0:/dev/ttyACM0
-    group_add:
-      - dialout
     volumes:
       - /opt/domum-core/compose/automation/home-assistant:/config
       - /etc/localtime:/etc/localtime:ro

@@ -5,25 +5,17 @@ services:
     restart: unless-stopped
     networks:
       - domum-internal
-      - domum-proxy
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - /opt/domum-core/compose/automation/mqtt/config:/mosquitto/config
+      - /opt/domum-core/compose/automation/mqtt/data:/mosquitto/data
+      - /opt/domum-core/compose/automation/mqtt/log:/mosquitto/log
     ports:
       - "1883:1883"
-    volumes:
-      - mosquitto-data:/mosquitto/data
-      - mosquitto-log:/mosquitto/log
-      - ./automation/mosquitto:/mosquitto/config:ro
-    labels:
-      - traefik.enable=true
-      - traefik.tcp.routers.mqtt.rule=HostSNI(`mqtt.${DOMUM_DOMAIN}`)
-      - traefik.tcp.routers.mqtt.entrypoints=websecure
-      - traefik.tcp.routers.mqtt.tls=true
-      - traefik.tcp.routers.mqtt.tls.certresolver=cf
-      - traefik.tcp.services.mqtt.loadbalancer.server.port=1883
     profiles:
       - core
 
 networks:
   domum-internal:
-    external: true
-  domum-proxy:
     external: true

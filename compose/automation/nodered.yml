@@ -6,15 +6,24 @@ services:
     networks:
       - domum-internal
       - domum-proxy
+    environment:
+      - TZ=America/New_York
     volumes:
-      - ${DOMUM_DIR:-/opt/domum-core}/data/nodered:/data
+      - /opt/domum-core/compose/automation/nodered:/data
     labels:
       - traefik.enable=true
+      - traefik.docker.network=domum-proxy
       - traefik.http.routers.nodered.rule=Host(`nodered.${DOMUM_DOMAIN}`)
       - traefik.http.routers.nodered.entrypoints=websecure
       - traefik.http.routers.nodered.tls=true
       - traefik.http.routers.nodered.tls.certresolver=cf
+      - traefik.http.routers.nodered.middlewares=securityHeaders@file,forwardedHeaders@file
       - traefik.http.services.nodered.loadbalancer.server.port=1880
-      - traefik.http.routers.nodered.middlewares=securityHeaders@file
     profiles:
-      - night
+      - core
+
+networks:
+  domum-internal:
+    external: true
+  domum-proxy:
+    external: true

@@ -1,0 +1,38 @@
+services:
+  zwave-js-ui:
+    image: zwavejs/zwave-js-ui:latest
+    container_name: zwave-js-ui
+    restart: unless-stopped
+    tty: true
+    stop_signal: SIGINT
+    privileged: true
+    environment:
+      - TZ=America/New_York
+    networks:
+      - domum-proxy
+      - domum-data
+    devices:
+      - /dev/serial/by-id/usb-0658_0200-if00:/dev/zwave
+    volumes:
+      - /opt/domum-core/compose/automation/zwave-js-ui/store:/usr/src/app/store
+    ports:
+      - "8091:8091"
+      - "3000:3000"
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=domum-proxy
+      - traefik.http.routers.zwave.rule=Host(`zwave.${DOMUM_DOMAIN}`)
+      - traefik.http.routers.zwave.entrypoints=websecure
+      - traefik.http.routers.zwave.tls=true
+      - traefik.http.routers.zwave.tls.certresolver=cf
+      - traefik.http.routers.zwave.middlewares=securityHeaders@file,forwardedHeaders@file
+      - traefik.http.services.zwave.loadbalancer.server.port=8091
+    profiles:
+      - core
+
+networks:
+  domum-proxy:
+    external: true
+  domum-data:
+    name: domum-data
+    driver: bridge

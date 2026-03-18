@@ -9,18 +9,29 @@ services:
     environment:
       - TZ=America/New_York
     volumes:
-      - zigbee2mqtt-data:/app/data
+      - /opt/domum-core/compose/automation/zigbee2mqtt:/app/data
       - /run/udev:/run/udev:ro
-    # Set your adapter device path below
     devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
+      - /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_1069b4aa32a6ed118a20e8a32981d5c7-if00-port0:/dev/zigbee
     labels:
       - traefik.enable=true
+      - traefik.docker.network=domum-proxy
       - traefik.http.routers.z2m.rule=Host(`z2m.${DOMUM_DOMAIN}`)
       - traefik.http.routers.z2m.entrypoints=websecure
       - traefik.http.routers.z2m.tls=true
       - traefik.http.routers.z2m.tls.certresolver=cf
+      - traefik.http.routers.z2m.middlewares=securityHeaders@file,forwardedHeaders@file
       - traefik.http.services.z2m.loadbalancer.server.port=8080
-      - traefik.http.routers.z2m.middlewares=securityHeaders@file
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     profiles:
       - core
+
+networks:
+  domum-internal:
+    external: true
+  domum-proxy:
+    external: true

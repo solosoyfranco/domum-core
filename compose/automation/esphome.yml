@@ -1,21 +1,31 @@
 services:
   esphome:
-    image: esphome/esphome:latest
+    image: ghcr.io/esphome/esphome:latest
     container_name: esphome
     restart: unless-stopped
     networks:
+      - domum-internal
       - domum-proxy
-    volumes:
-      - ${DOMUM_DIR:-/opt/domum-core}/data/esphome:/config
     environment:
       - TZ=America/New_York
+    privileged: true
+    volumes:
+      - /opt/domum-core/compose/automation/esphome:/config
+      - /etc/localtime:/etc/localtime:ro
     labels:
       - traefik.enable=true
+      - traefik.docker.network=domum-proxy
       - traefik.http.routers.esphome.rule=Host(`esphome.${DOMUM_DOMAIN}`)
       - traefik.http.routers.esphome.entrypoints=websecure
       - traefik.http.routers.esphome.tls=true
       - traefik.http.routers.esphome.tls.certresolver=cf
+      - traefik.http.routers.esphome.middlewares=securityHeaders@file,forwardedHeaders@file
       - traefik.http.services.esphome.loadbalancer.server.port=6052
-      - traefik.http.routers.esphome.middlewares=securityHeaders@file
     profiles:
-      - night
+      - core
+
+networks:
+  domum-internal:
+    external: true
+  domum-proxy:
+    external: true

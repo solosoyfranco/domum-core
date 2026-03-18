@@ -4,6 +4,8 @@ homeassistant:
   packages: !include_dir_named packages
 frontend:
   themes: !include_dir_merge_named themes
+media_source:
+
 http:
   use_x_forwarded_for: true
   trusted_proxies:
