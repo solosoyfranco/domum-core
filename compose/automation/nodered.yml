@@ -8,6 +8,7 @@ services:
       - domum-proxy
     environment:
       - TZ=America/New_York
+    user: "1000:1000"
     volumes:
       - /opt/domum-core/compose/automation/nodered:/data
     labels:

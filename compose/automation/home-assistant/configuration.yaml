@@ -1,9 +1,13 @@
+default_config:
 homeassistant:
   external_url: !secret external_url
   internal_url: !secret internal_url
   packages: !include_dir_named packages
 frontend:
   themes: !include_dir_merge_named themes
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
 media_source:
 
 http:
