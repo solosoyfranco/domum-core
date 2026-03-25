@@ -110,6 +110,9 @@ compose_files_for_enabled_services() {
   if [[ "${ENABLE_ESP_HOME:-0}" == "1" ]]; then
     files+=("$DOMUM_DIR/compose/automation/esphome.yml")
   fi
+  if [[ "${ENABLE_MA:-0}" == "1" ]]; then
+    files+=("$DOMUM_DIR/compose/automation/music-assistant.yml")
+  fi
 
   # Monitoring
   if [[ "${ENABLE_UPTIME_KUMA:-0}" == "1" ]]; then

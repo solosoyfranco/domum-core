@@ -1,0 +1,29 @@
+services:
+  musicassistant:
+    image: ghcr.io/music-assistant/server:latest
+    container_name: musicassistant
+    restart: unless-stopped
+    networks:
+      - domum-data
+      - domum-proxy
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - /opt/domum-core/compose/automation/music-assistant:/data
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=domum-proxy
+      - traefik.http.routers.ma.rule=Host(`ma.${DOMUM_DOMAIN}`)
+      - traefik.http.routers.ma.entrypoints=websecure
+      - traefik.http.routers.ma.tls=true
+      - traefik.http.routers.ma.tls.certresolver=cf
+      - traefik.http.routers.ma.middlewares=securityHeaders@file,forwardedHeaders@file
+      - traefik.http.services.ma.loadbalancer.server.port=8095
+    profiles:
+      - core
+
+networks:
+  domum-proxy:
+    external: true
+  domum-data:
+    external: true
